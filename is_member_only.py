@@ -24,6 +24,8 @@ def parse_googlesearch_url(url):
     raw_url = re.search("url\=(.*)\&usg", url)
     encoded_url = raw_url.group(1)
     decoded_url = urllib.parse.unquote(encoded_url)
+    print("\nReal URL Found!")
+    print("Real URL:", decoded_url)
     return decoded_url
 
 
@@ -48,6 +50,8 @@ def check_member_only(html):
 
 ## Check if it's a Google Search URL
 if is_googlesearch_url(target_URL):
+    print("This is a google search URL")
+    print("parsing url...")
     target_URL = parse_googlesearch_url(target_URL)
 
 # Check if it's a Medium
