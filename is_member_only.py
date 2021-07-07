@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import argparse
+import urllib.parse
 
 parser = argparse.ArgumentParser(description='Check if an article on Medium is member-only.')
 parser.add_argument("url", help="Article's URL to check")
@@ -14,6 +15,17 @@ args = parser.parse_args()
 target_URL = args.url
 target_URL_HTML = None
 memberonly_element = "article class=\"meteredContent\""
+
+def is_googlesearch_url(url):
+    if url.startswith("https://www.google.com/url?"):
+        return True
+
+def parse_googlesearch_url(url):
+    raw_url = re.search("url\=(.*)\&usg", url)
+    encoded_url = raw_url.group(1)
+    decoded_url = urllib.parse.unquote(encoded_url)
+    return decoded_url
+
 
 def fetch_URL(url):
     global target_URL_HTML
@@ -33,6 +45,10 @@ def check_member_only(html):
         fetch_URL(target_URL)
     
     return target_URL_HTML.find(memberonly_element)
+
+## Check if it's a Google Search URL
+if is_googlesearch_url(target_URL):
+    target_URL = parse_googlesearch_url(target_URL)
 
 # Check if it's a Medium
 
